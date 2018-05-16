@@ -4,23 +4,21 @@ import argparse
 
 from apiclient import discovery
 import oauth2client
-from oauth2client import client
-from oauth2client import tools
+from oauth2client import file, client, tools
 
 from ss import SSArea
-import config
 
 
 
 class GoogleService:
-  def __init__(self, flags):
+  def __init__(self, appName, flags):
     # If modifying these scopes, delete your previously saved credentials
     # at ~/.credentials/sheets.googleapis.com-python-quickstart.json
     #SCOPES = 'https://www.googleapis.com/auth/spreadsheets.readonly'
     self.SCOPES = 'https://www.googleapis.com/auth/spreadsheets'
     self.CLIENT_SECRET_FILE = 'client_secret.json'
-    self.APPLICATION_NAME = config.applicationName
-    self.CREDENTIAL_FILE = config.credentialFile
+    self.CREDENTIAL_FILE = 'credentials.json'
+    self.APPLICATION_NAME = appName
     self.flags = flags
     #try:
     #  self.flags = argparse.ArgumentParser(parents=[tools.argparser]).parse_args()
@@ -42,15 +40,15 @@ class GoogleService:
         os.makedirs(credential_dir)
     credential_path = os.path.join(credential_dir, self.CREDENTIAL_FILE)
 
-    store = oauth2client.file.Storage(credential_path)
+    store = file.Storage(credential_path)
     credentials = store.get()
     if not credentials or credentials.invalid:
         flow = client.flow_from_clientsecrets(self.CLIENT_SECRET_FILE, self.SCOPES)
         flow.user_agent = self.APPLICATION_NAME
-        if flags:
-            credentials = tools.run_flow(flow, store, flags)
+        if self.flags:
+            credentials = tools.run_flow(flow, store, self.flags)
         else: # Needed only for compatibility with Python 2.6
-            credentials = tools.run(flow, store)
+            credentials = tools.run_flow(flow, store)
         print('Storing credentials to ' + credential_path)
     return credentials
 
