@@ -64,12 +64,8 @@ class GoogleService:
 
 
 
-#class CSheetTab:
-#  def __init__(self, service):
-#    pass
-
 class GRange:
-  def __init__(self, tabName, rowstart=None, colstart=None, rowend = None, colend = None):
+  def __init__(self, tabName, colstart=None, rowstart=None, colend=None, rowend = None):
     self.tabName = tabName
     self.rowstart = rowstart
     self.colstart = colstart
@@ -105,8 +101,11 @@ class GRange:
   def name(self):
     r = "'" + self.tabName + "'!"
     r += GRange.cellName(self.rowstart, self.colstart)
-    if self.rowend != None and self.colend != None:
-      r += ':' + GRange.cellName(self.rowend , self.colend)
+    if self.colend != None:
+      if self.rowend != None:
+        r += ':' + GRange.cellName(self.rowend , self.colend)
+      else:
+        r += ':' + GRange.colName(self.colend)
     return r
 
   # in:   0 based idx

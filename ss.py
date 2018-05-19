@@ -33,16 +33,19 @@ class SSRow:
 
 
 class SSArea:
-  def __init__(self, cols, rows = 0):
+  def __init__(self, cols, rows = 0, fieldsep = ','):
     self.cols = cols
     self.rows = 0
     self.data = []
-    self.fieldsep = ','
+    self.fieldsep = fieldsep
     self.linesep = "\n"
     self.rowidx = 0
     if rows > 0:
       for row in range(rows):
         self.addRow()
+
+  def setDelimiter(self, fieldsep):
+    self.fieldsep = fieldsep
 
   def addRow(self, values = None):
     self.data.append(SSRow(self.cols, values))
