@@ -1,5 +1,6 @@
 import httplib2
 import os
+import os.path
 import argparse
 
 from apiclient import discovery
@@ -11,13 +12,13 @@ from ss import SSArea
 
 
 class GoogleService:
-  def __init__(self, appName, flags):
+  def __init__(self, appName, dir, flags):
     # If modifying these scopes, delete your previously saved credentials
     # at ~/.credentials/sheets.googleapis.com-python-quickstart.json
     #SCOPES = 'https://www.googleapis.com/auth/spreadsheets.readonly'
     self.SCOPES = 'https://www.googleapis.com/auth/spreadsheets'
-    self.CLIENT_SECRET_FILE = 'client_secret.json'
-    self.CREDENTIAL_FILE = 'credentials.json'
+    self.CLIENT_SECRET_FILE = os.path.join(dir, 'client_secret.json')
+    self.CREDENTIAL_FILE = os.path.join(dir, 'credentials.json')
     self.APPLICATION_NAME = appName
     self.flags = flags
     #try:
@@ -34,11 +35,14 @@ class GoogleService:
     Returns:
         Credentials, the obtained credential.
     """
-    home_dir = os.path.expanduser('~')
-    credential_dir = os.path.join(home_dir, '.credentials')
-    if not os.path.exists(credential_dir):
-        os.makedirs(credential_dir)
-    credential_path = os.path.join(credential_dir, self.CREDENTIAL_FILE)
+    #home_dir = os.path.expanduser('~')
+    #credential_dir = os.path.join(home_dir, '.credentials')
+    #if not os.path.exists(credential_dir):
+    #    os.makedirs(credential_dir)
+    #credential_path = os.path.join(credential_dir, self.CREDENTIAL_FILE)
+    # maybe storing in ~/.credentials/ is slightly more secure? 
+    # but may overwrite if I reuse this for another project
+    credential_path = self.CREDENTIAL_FILE
 
     store = file.Storage(credential_path)
     credentials = store.get()
